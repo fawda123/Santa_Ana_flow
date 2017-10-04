@@ -1,0 +1,22 @@
+---
+title: "Flow summaries"
+author: "Marcus Beck"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+self_contained: yes
+---
+
+```{r, echo = F}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/')
+```
+
+```{r}
+data(shed)
+data(refs)
+data(ants)
+```
+
