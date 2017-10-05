@@ -3,7 +3,7 @@ title: "Flow summaries"
 author: "Marcus Beck"
 output: 
   html_document:
-    code_folding: hide
+    code_folding: show
     toc: true
     toc_float: true
 self_contained: yes
@@ -15,8 +15,38 @@ opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/')
 ```
 
 ```{r}
+library(tidyverse)
+library(knitr)
+
+# load data
 data(shed)
-data(refs)
-data(ants)
+data(flos)
+
+# long format with separate variables for categories
+head(flos)
 ```
+
+```{r}
+flcts <- c(2, 10)
+dicts <- c(0.33, 0.66)
+flos <- flos %>% 
+  mutate(
+    flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('lo', 'md', 'hi')),
+    dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inc', 'Sta', 'Dim'))
+  ) 
+
+sum1 <- flos %>% 
+  group_by(SMC_Name, mo, clim, flocat) %>% 
+  summarise(mls = sum(Shape_Leng))
+
+sum2 <- flos %>% 
+  group_by(SMC_Name, mo, clim, flocat, dicat) %>% 
+  summarise(mls = sum(Shape_Leng))
+
+save(sum1, file = 'data/sum1.RData', compress = 'xz') 
+save(sum2, file = 'data/sum2.RData', compress = 'xz') 
+head(sum1)
+head(sum2)
+```
+
 
