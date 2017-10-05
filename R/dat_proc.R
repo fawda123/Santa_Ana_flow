@@ -7,12 +7,12 @@ shds <- c('San Gabriel', 'Upper Santa Ana', 'Middle Santa Ana', 'Lower Santa Ana
 prstr <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" 
 
 # study area sheds, SMC from abv
-shed <- readOGR('ignore/StudyArea_Sheds.shp')%>% 
+shed <- readOGR('raw/StudyArea_Sheds.shp')%>% 
   spTransform(CRS(prstr)) %>%  
   subset(SMC_Name %in% shds)
 
 # reference
-refs <- readOGR('ignore/Ref_StudyArea_100317.shp')%>% 
+refs <- readOGR('raw/Ref_StudyArea_100317.shp')%>% 
   spTransform(CRS(prstr)) %>% 
   raster::intersect(shed) %>% 
   data.frame %>% 
@@ -22,7 +22,7 @@ refs <- readOGR('ignore/Ref_StudyArea_100317.shp')%>%
   separate(var, c('mo', 'clim'), sep = '_')
 
 # anthropogenic
-ants <- readOGR('ignore/Anthro_StudyArea_100317.shp') %>% 
+ants <- readOGR('raw/Anthro_StudyArea_100317.shp') %>% 
   spTransform(CRS(prstr)) %>% 
   data.frame %>% 
   dplyr::select(COMID, matches('Wet|Dry|Norm')) %>%
