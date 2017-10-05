@@ -27,21 +27,38 @@ head(flos)
 ```
 
 ```{r}
+# catchment stream length
+lns <- flos %>% 
+  select(SMC_Name, COMID, Shape_Leng) %>% 
+  unique %>% 
+  group_by(SMC_Name) %>% 
+  summarise(totlen = sum(Shape_Leng))
+
+# splits
 flcts <- c(2, 10)
 dicts <- c(0.33, 0.66)
 flos <- flos %>% 
   mutate(
     flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('lo', 'md', 'hi')),
     dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inc', 'Sta', 'Dim'))
-  ) 
+  ) %>% 
+  left_join(lns, by = 'SMC_Name')
 
+# summarize by flocat
 sum1 <- flos %>% 
   group_by(SMC_Name, mo, clim, flocat) %>% 
-  summarise(mls = sum(Shape_Leng))
+  summarise(
+    len = sum(Shape_Leng), 
+    lenper = len / unique(totlen)
+    )
 
+# summarize by flocat, dicat
 sum2 <- flos %>% 
   group_by(SMC_Name, mo, clim, flocat, dicat) %>% 
-  summarise(mls = sum(Shape_Leng))
+  summarise(
+    len = sum(Shape_Leng),
+    lenper = len / unique(totlen)
+    )
 
 save(sum1, file = 'data/sum1.RData', compress = 'xz') 
 save(sum2, file = 'data/sum2.RData', compress = 'xz') 

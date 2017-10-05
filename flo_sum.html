@@ -253,46 +253,63 @@ head(flos)</code></pre>
 ## 4  22554982  Upper Santa Ana 0.015311028 Sep  Wet 8.211295 1.0000000
 ## 5  20355474  Lower Santa Ana 0.007013530 Sep  Wet 5.070207 0.9999998
 ## 6  22558984  Upper Santa Ana 0.018593630 Sep  Wet 7.629303 1.0000000</code></pre>
-<pre class="r"><code>flcts &lt;- c(2, 10)
+<pre class="r"><code># catchment stream length
+lns &lt;- flos %&gt;% 
+  select(SMC_Name, COMID, Shape_Leng) %&gt;% 
+  unique %&gt;% 
+  group_by(SMC_Name) %&gt;% 
+  summarise(totlen = sum(Shape_Leng))
+
+# splits
+flcts &lt;- c(2, 10)
 dicts &lt;- c(0.33, 0.66)
 flos &lt;- flos %&gt;% 
   mutate(
     flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('lo', 'md', 'hi')),
     dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inc', 'Sta', 'Dim'))
-  ) 
+  ) %&gt;% 
+  left_join(lns, by = 'SMC_Name')
 
+# summarize by flocat
 sum1 &lt;- flos %&gt;% 
   group_by(SMC_Name, mo, clim, flocat) %&gt;% 
-  summarise(mls = sum(Shape_Leng))
+  summarise(
+    len = sum(Shape_Leng), 
+    lenper = len / unique(totlen)
+    )
 
+# summarize by flocat, dicat
 sum2 &lt;- flos %&gt;% 
   group_by(SMC_Name, mo, clim, flocat, dicat) %&gt;% 
-  summarise(mls = sum(Shape_Leng))
+  summarise(
+    len = sum(Shape_Leng),
+    lenper = len / unique(totlen)
+    )
 
 save(sum1, file = 'data/sum1.RData', compress = 'xz') 
 save(sum2, file = 'data/sum2.RData', compress = 'xz') 
 head(sum1)</code></pre>
-<pre><code>## # A tibble: 6 x 5
-## # Groups:   SMC_Name, mo, clim [2]
-##          SMC_Name    mo  clim flocat         mls
-##            &lt;fctr&gt; &lt;chr&gt; &lt;chr&gt; &lt;fctr&gt;       &lt;dbl&gt;
-## 1 Lower Santa Ana   Apr   Dry     lo 0.013930525
-## 2 Lower Santa Ana   Apr   Dry     md 5.487979355
-## 3 Lower Santa Ana   Apr   Dry     hi 1.736365772
-## 4 Lower Santa Ana   Apr  Norm     lo 0.003257303
-## 5 Lower Santa Ana   Apr  Norm     md 0.999879536
-## 6 Lower Santa Ana   Apr  Norm     hi 6.235138812</code></pre>
-<pre class="r"><code>head(sum2)</code></pre>
 <pre><code>## # A tibble: 6 x 6
+## # Groups:   SMC_Name, mo, clim [2]
+##          SMC_Name    mo  clim flocat         len      lenper
+##            &lt;fctr&gt; &lt;chr&gt; &lt;chr&gt; &lt;fctr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Lower Santa Ana   Apr   Dry     lo 0.013930525 0.001924564
+## 2 Lower Santa Ana   Apr   Dry     md 5.487979355 0.758188776
+## 3 Lower Santa Ana   Apr   Dry     hi 1.736365772 0.239886660
+## 4 Lower Santa Ana   Apr  Norm     lo 0.003257303 0.000450011
+## 5 Lower Santa Ana   Apr  Norm     md 0.999879536 0.138137809
+## 6 Lower Santa Ana   Apr  Norm     hi 6.235138812 0.861412180</code></pre>
+<pre class="r"><code>head(sum2)</code></pre>
+<pre><code>## # A tibble: 6 x 7
 ## # Groups:   SMC_Name, mo, clim, flocat [4]
-##          SMC_Name    mo  clim flocat  dicat         mls
-##            &lt;fctr&gt; &lt;chr&gt; &lt;chr&gt; &lt;fctr&gt; &lt;fctr&gt;       &lt;dbl&gt;
-## 1 Lower Santa Ana   Apr   Dry     lo    Dim 0.013930525
-## 2 Lower Santa Ana   Apr   Dry     md    Inc 0.032134401
-## 3 Lower Santa Ana   Apr   Dry     md    Dim 5.455844954
-## 4 Lower Santa Ana   Apr   Dry     hi    Inc 0.005179056
-## 5 Lower Santa Ana   Apr   Dry     hi    Dim 1.731186716
-## 6 Lower Santa Ana   Apr  Norm     lo    Dim 0.003257303</code></pre>
+##          SMC_Name    mo  clim flocat  dicat         len       lenper
+##            &lt;fctr&gt; &lt;chr&gt; &lt;chr&gt; &lt;fctr&gt; &lt;fctr&gt;       &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Lower Santa Ana   Apr   Dry     lo    Dim 0.013930525 0.0019245640
+## 2 Lower Santa Ana   Apr   Dry     md    Inc 0.032134401 0.0044395106
+## 3 Lower Santa Ana   Apr   Dry     md    Dim 5.455844954 0.7537492652
+## 4 Lower Santa Ana   Apr   Dry     hi    Inc 0.005179056 0.0007155097
+## 5 Lower Santa Ana   Apr   Dry     hi    Dim 1.731186716 0.2391711505
+## 6 Lower Santa Ana   Apr  Norm     lo    Dim 0.003257303 0.0004500110</code></pre>
 
 
 
