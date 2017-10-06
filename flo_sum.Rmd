@@ -34,14 +34,22 @@ lns <- flos %>%
   summarise(totlen = sum(Shape_Leng))
 
 # splits
-flcts <- c(2, 10)
-dicts <- c(0.33, 0.66)
+flcts <- c(1, 10, 100)
+dicts <- c(0.1, 0.9)
 flos <- flos %>% 
   mutate(
-    flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('lo', 'md', 'hi')),
-    dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inc', 'Sta', 'Dim'))
+    flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('< 1 cfs', '1 - 10 cfs', '10 - 100 cfs', '> 100 cfs')),
+    dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inflated', 'Stable', 'Diminished'))
   ) %>% 
-  left_join(lns, by = 'SMC_Name')
+  left_join(lns, by = 'SMC_Name') %>% 
+  mutate(
+    SMC_Name = factor(SMC_Name, 
+                      levels = c('San Gabriel', 'Lower Santa Ana', 'Middle Santa Ana', 'Upper Santa Ana', 'San Jacinto'), 
+                      labels = c('SGB', 'LSA', 'MSA', 'USA', 'SJC')
+                      ), 
+    mo = factor(mo, levels = c('Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'))
+  )
+  
 
 # summarize by flocat
 sum1 <- flos %>% 
@@ -53,7 +61,7 @@ sum1 <- flos %>%
 
 # summarize by flocat, dicat
 sum2 <- flos %>% 
-  group_by(SMC_Name, mo, clim, flocat, dicat) %>% 
+  group_by(SMC_Name, mo, clim, dicat) %>% 
   summarise(
     len = sum(Shape_Leng),
     lenper = len / unique(totlen)
@@ -64,6 +72,25 @@ save(sum2, file = 'data/sum2.RData', compress = 'xz')
 head(sum1)
 head(sum2)
 ```
+
+```{r refplot, fig.height = 8, fig.width = 7}
+ggplot(data = sum1, aes(x = clim, y = len)) + 
+  geom_bar(aes(fill = flocat), stat = "identity", position = "stack") + 
+  scale_fill_brewer(palette = "Blues", name = "Discharge") + 
+  facet_grid(mo~SMC_Name) + xlab("") + ylab("Total stream-length (km)") + 
+  ggtitle("Reference flows") + 
+  theme(legend.position = "bottom")
+```
+
+```{r anthroplot, fig.height = 8, fig.width = 7}
+ggplot(data = sum2, aes(x = clim, y = len)) +
+  geom_bar(aes(fill = dicat), stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("#91cf60","#91bfdb","#fc8d59"), name = "Likely change\nin discharge") + 
+  facet_grid(mo~SMC_Name) + xlab("") + ylab("Total stream-length (km)") + 
+  ggtitle("Anthropogenic flow") + 
+  theme(legend.position = "bottom")
+```
+
 
 Modelled flow estimates from `r flos$COMID %>% unique %>% length` stream reaches in `r flos$SMC_Name %>% unique %>% length %>% english` catchments in Southern California were summarized to quantify stream miles under different hydrologic conditions. Flow estimates were based on reference scenarios under historical, non-impacted land use conditions and anthropogenic scenarios under current, developed conditions.  For each condition, monthly flow was estimated for climate variation characterized as dry, normal, and wet years.  Likelihood of flow conditions inflating, diminishing, or remaining stable was also summarized for each watershed.
 
