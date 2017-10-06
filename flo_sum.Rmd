@@ -4,8 +4,6 @@ author: "Marcus Beck"
 output: 
   html_document:
     code_folding: show
-    toc: true
-    toc_float: true
 self_contained: yes
 ---
 
@@ -17,6 +15,7 @@ opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/')
 ```{r}
 library(tidyverse)
 library(knitr)
+library(english)
 
 # load data
 data(shed)
@@ -66,4 +65,6 @@ head(sum1)
 head(sum2)
 ```
 
+Modelled flow estimates from `r flos$COMID %>% unique %>% length` stream reaches in `r flos$SMC_Name %>% unique %>% length %>% english` catchments in Southern California were summarized to quantify stream miles under different hydrologic conditions. Flow estimates were based on reference scenarios under historical, non-impacted land use conditions and anthropogenic scenarios under current, developed conditions.  For each condition, monthly flow was estimated for climate variation characterized as dry, normal, and wet years.  Likelihood of flow conditions inflating, diminishing, or remaining stable was also summarized for each watershed.
 
+Among all watersheds, flow estimates under reference conditions were highest during winter to early spring (January through April) when flows > 100 cfs were more common. Similarly, flows < 1 cfs were more common during the summer and fall.  A general gradient of decreasing flow from the upper to lower catchments was also observed.  For example, flow estimates for the Upper Santa Ana catchment were generally higher than those for the Lower Santa Ana.  Flow estimates also increased as expected under different climate conditions such that greater flow was estimated during wet years.  Diminishing flow was the most common prediction under anthropogenic conditions, although some exceptions were observed.  Stream reaches were more likely to remain stable during the winter, particularly in December. Flow conditions were also more likely to be stable during wet years.   Interestingly, stream conditions in January under normal precipitation were most likely to be inflated, whereas conditions were expected to be stable during wet years. Patterns between catchments were generally consistent.      
