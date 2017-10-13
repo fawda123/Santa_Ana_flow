@@ -1,0 +1,40 @@
+---
+title: "Appendix: Summary of flow simulations under reference and anthropogenic conditions"
+output: 
+  word_document
+---
+
+```{r, echo = F, warning = FALSE, message = FALSE}
+library(knitr)
+library(english)
+library(tidyverse)
+opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/', echo = F)
+
+load(file = '../data/sum1.RData')
+load(file = '../data/sum2.RData')
+load(file = '../data/flos.RData')
+```
+
+Modelled flow estimates from `r flos$COMID %>% unique %>% length` stream reaches in `r flos$SMC_Name %>% unique %>% length %>% english` catchments in Southern California were summarized to quantify stream miles under different hydrologic conditions. Flow estimates were based on reference scenarios under historical, non-impacted land use conditions and anthropogenic scenarios under current, developed conditions.  For each condition, monthly flow was estimated for climate variation characterized as dry, normal, and wet years.  Likelihood of flow conditions inflating, diminishing, or remaining stable was also summarized for each watershed.
+
+Among all watersheds, flow estimates under reference conditions (Figure 1) were highest during winter to early spring (January through April) when flows > 100 cfs were more common. Similarly, flows < 1 cfs were more common during the summer and fall.  A general gradient of decreasing flow from the upper to lower catchments was also observed.  For example, flow estimates for the Upper Santa Ana catchment were generally higher than those for the Lower Santa Ana.  
+
+Flow estimates also increased as expected under different climate conditions such that greater flow was estimated during wet years (Figure 2).  Diminishing flow was the most common prediction under anthropogenic conditions, although some exceptions were observed.  Stream reaches were more likely to remain stable during the winter, particularly in December. Flow conditions were also more likely to be stable during wet years.   Interestingly, stream conditions in January under normal precipitation were most likely to be inflated, whereas conditions were expected to be stable during wet years. Patterns between catchments were generally consistent.    
+
+```{r refplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 1: Number of stream miles for the estimated discharge (< 1 cfs, 1 - 10 cfs, 10 - 100 cfs, > 100 cfs) under reference conditions. Discharges were also estimated for different climatic scenarios for years that were dry, normal, or wet.'}
+ggplot(data = sum1, aes(x = clim, y = len)) + 
+  geom_bar(aes(fill = flocat), stat = "identity", position = "stack") + 
+  scale_fill_brewer(palette = "Blues", name = "Discharge") + 
+  facet_grid(mo~SMC_Name) + xlab("") + ylab("Total stream-length (km)") + 
+  ggtitle("Reference flows") + 
+  theme(legend.position = "bottom")
+```
+
+```{r anthroplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 2: Number of stream miles for the estimated likelihood of a change discharge as inflating, diminishing, or remaining stable under anthropogenic conditions.  Likelihoods were estimated for different climatic scenarios for years that were dry, normal, or wet.' }
+ggplot(data = sum2, aes(x = clim, y = len)) +
+  geom_bar(aes(fill = dicat), stat = "identity", position = "stack")+
+  scale_fill_manual(values = c("#91cf60","#91bfdb","#fc8d59"), name = "Likely change\nin discharge") + 
+  facet_grid(mo~SMC_Name) + xlab("") + ylab("Total stream-length (km)") + 
+  ggtitle("Anthropogenic flow") + 
+  theme(legend.position = "bottom")
+```

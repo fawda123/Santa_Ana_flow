@@ -1,0 +1,21 @@
+---
+title: "Executive summary"
+output: word_document
+---
+
+```{r, echo = F, warning = FALSE, message = FALSE}
+library(knitr)
+library(english)
+library(tidyverse)
+opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/', echo = F)
+
+load(file = '../data/sum1.RData')
+load(file = '../data/sum2.RData')
+load(file = '../data/flos.RData')
+```
+
+# Overview
+
+# Key findings
+
+# Recommendations
