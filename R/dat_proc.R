@@ -95,3 +95,23 @@ sum2 <- flos %>%
 
 save(sum1, file = 'data/sum1.RData', compress = 'xz') 
 save(sum2, file = 'data/sum2.RData', compress = 'xz') 
+
+##
+# create comids, stream reaches in fortified format 
+
+# study area sheds, SMC from abv
+shed <- readOGR('raw/StudyArea_Sheds.shp') %>% 
+  spTransform(CRS(prstr)) %>%  
+  subset(SMC_Name %in% shds)
+
+# streams lat/lon by comid
+refs <- readOGR('raw/Ref_StudyArea_100317.shp')%>% 
+  spTransform(CRS(prstr)) %>% 
+  raster::intersect(shed)
+key <- refs@data %>% 
+  rownames_to_column('id') %>% 
+  dplyr::select(id, COMID)  
+comids <- tidy(refs) %>% 
+  left_join(key, by = 'id')
+
+save(comids, file = 'data/comids.RData', compress = 'xz')
