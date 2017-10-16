@@ -16,6 +16,35 @@ load(file = '../data/flos.RData')
 
 # Overview
 
-# Key findings
+Ephemeral, non-perennial streams are common features of hydrologic networks in dry, arid regions of Southern California.  These streams drain large areas of watersheds that can greatly influence the quantity and quality of downstream waters.  These streams have traditionally been excluded from regional assessment programs due to insufficient information to develop an ecological approach for management.  The assessment of non-perennial streams, in addition to traditional monitoring of perennial waters, is critical for developing a complete picture of watershed health.  
 
-# Recommendations
+Identifying the locations and extents of ephemeral streams is the first step towards more holistic assessments.  Existing data layers do not fully represent these under-sampled streams, such that new information must be generated to assist with the development of assessment programs.  Knowledge on the locations of these streams can be used to evaluate the ability of existing assessment tools to characterize hydrologic and ecological conditions, or if new methods need to be developed.  
+
+The Regional Water Quality Control Boards (RWQCB) have recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These efforts have been underway in the San Diego Watershed, where such models have shown promise in management applications.  This report summarizes efforts to apply and refine stream periodicity models developed for San Diego to the five waterheds of the Santa Ana RWQCB.  The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characeterize hydrologic flow conditions in different watersheds.
+
+# Key findings and products
+
+**Geodatabase of model predictions**
+
+Two geodatabases that link spatial and flow predictions were created for application to the Santa Ana watershed. These databases were created under two watershed land use scenarios:
+
+* Reference streamflow characteristics
+* Hydrologically altered watersheds with anthropogenic influences
+
+
+
+**Estimates of flow conditions under different scenarios**
+
+# How can this support management decisions?
+
+Impacts of water recycling
+
+Many ephemeral streams are now perennial w/ changes in discharge patterns
+
+# Recommendations for future work
+
+Additional comparison with San Diego model to combine
+
+Additional model refinement 
+Knowledge gaps
+
