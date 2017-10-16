@@ -7,11 +7,15 @@ output: word_document
 library(knitr)
 library(english)
 library(tidyverse)
+library(broom)
+
 opts_chunk$set(warning = FALSE, message = FALSE, fig.path = 'figs/', echo = F)
 
 load(file = '../data/sum1.RData')
 load(file = '../data/sum2.RData')
 load(file = '../data/flos.RData')
+load(file = '../data/shed.RData')
+load(file = '../data/comd.RData')
 ```
 
 # Overview
@@ -20,7 +24,7 @@ Ephemeral, non-perennial streams are common features of hydrologic networks in d
 
 Identifying the locations and extents of ephemeral streams is the first step towards more holistic assessments.  Existing data layers do not fully represent these under-sampled streams, such that new information must be generated to assist with the development of assessment programs.  Knowledge on the locations of these streams can be used to evaluate the ability of existing assessment tools to characterize hydrologic and ecological conditions, or if new methods need to be developed.  
 
-The Regional Water Quality Control Boards (RWQCB) have recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These efforts have been underway in the San Diego Watershed, where such models have shown promise in management applications.  This report summarizes efforts to apply and refine stream periodicity models developed for San Diego to the five waterheds of the Santa Ana RWQCB.  The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characeterize hydrologic flow conditions in different watersheds.
+The Regional Water Quality Control Boards (RWQCB) have recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These efforts have been underway in the San Diego Watershed, where such models have shown promise in management applications.  This report summarizes efforts to apply and refine stream periodicity models developed for San Diego to the five watersheds of the Santa Ana RWQCB.  The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characterize hydrologic flow conditions in different watersheds.
 
 # Key findings and products
 
@@ -34,6 +38,55 @@ Two geodatabases that link spatial and flow predictions were created for applica
 
 
 **Estimates of flow conditions under different scenarios**
+
+```{r, fig.height = 5, fig.width = 7, fig.cap = 'Examples of model output showing estimates of stream flow under reference land use conditions.  Estimates are shown for February and November under wet and dry conditions.'}
+# splits
+flcts <- c(1, 10, 100)
+dicts <- c(0.1, 0.9)
+flos <- flos %>% 
+  mutate(
+    flocat = cut(flo, breaks = c(-Inf, flcts, Inf), labels = c('< 1 cfs', '1 - 10 cfs', '10 - 100 cfs', '> 100 cfs')),
+    dicat = cut(Di, breaks = c(-Inf, dicts, Inf), labels = c('Inflated', 'Stable', 'Diminished'))
+  ) %>% 
+  mutate(
+    SMC_Name = factor(SMC_Name, 
+                      levels = c('San Gabriel', 'Lower Santa Ana', 'Middle Santa Ana', 'Upper Santa Ana', 'San Jacinto'), 
+                      labels = c('SGB', 'LSA', 'MSA', 'USA', 'SJC')
+    ), 
+    mo = factor(mo, levels = c('Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'))
+  )
+
+# sheds
+shedplo <- shed %>% 
+  tidy
+
+# months to plot
+mos <- c('Feb', 'Aug')
+smc <- 'MSA'
+cli <- c('Dry', 'Wet')
+toplo <- flos %>% 
+  filter(mo %in% mos & clim %in% cli) %>% # & SMC_Name %in% smc) %>% 
+  select(-Shape_Leng) %>% 
+  inner_join(comd, ., by = 'COMID')
+
+ggplot(toplo, aes(x = long, y = lat)) + 
+  geom_line(aes(group = COMID, colour = flo)) + 
+  geom_polygon(data = shedplo, aes(group = id), colour = 'black', fill = NA) + 
+  facet_grid(clim ~ mo) + 
+  scale_colour_distiller('Flow (cfs)', palette = 'Spectral') + #, trans = 'log10') + 
+  theme_minimal(base_family = 'serif') +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1), 
+    axis.title.x = element_blank(), 
+    axis.title.y = element_blank(),
+    panel.border = element_rect(colour = 'black', fill = NA, size = 0.5), 
+    legend.position = 'top', 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank()
+  ) +
+  coord_equal() + 
+  guides(colour = guide_colourbar(barwidth = 10, barheight = 0.7))
+```
 
 # How can this support management decisions?
 

@@ -111,7 +111,7 @@ refs <- readOGR('raw/Ref_StudyArea_100317.shp')%>%
 key <- refs@data %>% 
   rownames_to_column('id') %>% 
   dplyr::select(id, COMID)  
-comids <- tidy(refs) %>% 
+comd <- tidy(refs) %>% 
   left_join(key, by = 'id')
 
-save(comids, file = 'data/comids.RData', compress = 'xz')
+save(comd, file = 'data/comd.RData', compress = 'xz')
