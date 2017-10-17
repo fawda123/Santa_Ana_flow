@@ -20,22 +20,22 @@ load(file = '../data/comd.RData')
 
 # Overview
 
-Ephemeral, non-perennial streams are common features of hydrologic networks in dry, arid regions of Southern California.  These streams drain large areas of watersheds that can greatly influence the quantity and quality of downstream waters.  These streams have traditionally been excluded from regional assessment programs due to insufficient information to develop an ecological approach for management.  The assessment of non-perennial streams, in addition to traditional monitoring of perennial waters, is critical for developing a complete picture of watershed health.  
+Ephemeral streams are common features of hydrologic networks in arid regions of Southern California.  These streams drain large areas of watersheds and can greatly influence the quantity and quality of downstream waters.  However, ephemeral streams are generally excluded from regional assessment programs due to insufficient information to develop an ecological approach for management.  The assessment of non-perennial streams, in addition to traditional monitoring of perennial waters, is critical for developing a complete picture of watershed health.  
 
-Identifying the locations and extents of ephemeral streams is the first step towards more holistic assessments.  Existing data layers do not fully represent these under-sampled streams, such that new information must be generated to assist with the development of assessment programs.  Knowledge on the locations of these streams can be used to evaluate the ability of existing assessment tools to characterize hydrologic and ecological conditions, or if new methods need to be developed.  
+Identifying the locations and extents of ephemeral streams is the first step towards more holistic assessments.  Existing data layers do not fully represent these under-sampled streams, such that new information must be generated to help develop assessment programs.  Knowledge on the locations of these streams can be used to evaluate the ability of existing assessment tools to characterize hydrologic and ecological conditions, or if new methods need to be developed.  
 
-The Regional Water Quality Control Boards (RWQCB) have recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These efforts have been underway in the San Diego Watershed, where such models have shown promise in management applications.  This report summarizes efforts to apply and refine stream periodicity models developed for San Diego to the five watersheds of the Santa Ana RWQCB.  The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characterize hydrologic flow conditions in different watersheds.
+The Regional Water Quality Control Boards (RWQCB) have recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These efforts have been underway in the San Diego Watershed, where such models have shown promise. Extension of these models to other regions has been a priority research interest.  This report summarizes efforts to apply and refine stream periodicity models to the five watersheds of the Santa Ana RWQCB.  The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characterize flow conditions in different watersheds.
 
 # Key findings and products
 
 **Geodatabase of model predictions**
 
-Two geodatabases that link spatial and flow predictions were created for application to the Santa Ana region.  These databases were created under scenarios for 1) reference streamflows and 2) hydrologically altered watersheds with anthropogenic influences. Information in the geodatabases includes estimates of hydrologic conditions for every stream reach in the Santa Ana region. Estimates in each reach include:
+Two geodatabases that link spatial and flow predictions were created for application to the Santa Ana region.  These databases were created under scenarios for 1) reference streamflows and 2) hydrologically altered watersheds with anthropogenic influences. Information in the geodatabases includes estimates of hydrologic conditions for every stream reach in the Santa Ana region, including:
 
 * Flow estimates under reference conditions in each month for dry, stable, or wet conditions
 * Likelihood of stream flow inflating or diminishing under anthropogenic conditions for each month under dry, stable, or wet conditions.
 
-```{r, fig.height = 5, fig.width = 7, fig.cap = 'Examples of model output showing estimates of stream flow under reference land use conditions.  Estimates are shown for February and November under wet and dry conditions.'}
+```{r, fig.height = 6.5, fig.width = 7, fig.cap = 'Examples of model output showing estimates of stream flow under reference land use conditions.  Estimates are shown for February and August under dry, normal, and wet conditions.'}
 # splits
 flcts <- c(1, 10, 100)
 dicts <- c(0.1, 0.9)
@@ -59,7 +59,7 @@ shedplo <- shed %>%
 # months to plot
 mos <- c('Feb', 'Aug')
 smc <- 'MSA'
-cli <- c('Dry', 'Wet')
+cli <- c('Dry', 'Norm', 'Wet')
 toplo <- flos %>% 
   filter(mo %in% mos & clim %in% cli) %>% # & SMC_Name %in% smc) %>% 
   select(-Shape_Leng) %>% 
@@ -69,7 +69,7 @@ ggplot(toplo, aes(x = long, y = lat)) +
   geom_line(aes(group = COMID, colour = flo)) + 
   geom_polygon(data = shedplo, aes(group = id), colour = 'black', fill = NA) + 
   facet_grid(clim ~ mo) + 
-  scale_colour_distiller('Flow (cfs)', palette = 'Spectral') + #, trans = 'log10') + 
+  scale_colour_distiller('Flow (cfs)', palette = 'Spectral', direction = 1) + #, trans = 'log10') + 
   theme_minimal(base_family = 'serif') +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1), 
@@ -90,22 +90,22 @@ Flow conditions in the geodatabases were summarized for each of the five watersh
 
 **Diminishing flows under anthropogenic conditions**
 
-Diminishing flows were the most common predictions under anthropogenic conditions, although some exceptions were observed.  Stream reaches were more likely to remain stable during the winter, whereas flow conditions were also more likely to be stable during wet years.   
+Diminishing flows were the most common predictions under anthropogenic conditions, although some exceptions were observed.  Stream reaches were more likely to remain stable during the winter or during wet years.   
 
 # How can these data support management decisions?
 
 Understanding the location and projected variation in flow characteristics of stream reaches remains a priority management concern.  These data are particularly important to understand the effects of increased hydrologic demand for agricultural and municipal use. Two specific examples of anticipated watershed-level effects under changing climate scenarios highlight potential uses of these data. 
 
-*Assess potential impacts of water recycling* Increased demand for water and the effects of climatic variation suggests that many stream reaches will have diminished flows under anthropogenic conditions. Diminishing flows will require management agencies to increase water recycling practices in affected watersheds to discount the effect of reduced supply.  Information in the geodatabases can help prioritize locations where and when water recycling will likely be most effective by reducing potential downstream impacts.
+*Assess potential impacts of water recycling* Increased demand for water and the effects of climate variation suggests that many stream reaches will have diminished flows under anthropogenic conditions. Diminishing flows will require management agencies to increase water recycling in affected watersheds to discount the effect of reduced supply.  Information in the geodatabases can help prioritize locations where and when water recycling will likely be most effective by reducing potential downstream impacts.
 
-*Identify locations where management practices may change* Changes in flow patterns, either under reference or anthropogenic conditons, may result in dramatic departures from historical norms for many stream reaches.  Water diversions between locations or changes in withdrawal patterns may convert ephemeral streams to permenant perennial flowsm, whereas perennial streams may revert to intermittent flows following reductions. Changes in permanance may require different management strategies, which may range from changing beneficial uses and applying different assessment methods, to the developemt of alternative approaches of causal analysis in locations with new impairments. Data in this report can help identify locations where alteration in flow patterns are likely to occur, allowing managers to develop a proactive approach for future needs.
+*Identify locations where management practices may change* Changes in flow patterns may cause dramatic departures from historical norms for many stream reaches.  Water diversions between locations or changes in withdrawal patterns may convert ephemeral streams to permenant perennial flows, whereas perennial streams may revert to intermittent flows following reductions. Changes in permanance may require different management strategies, which may range from changing beneficial uses and applying different assessment methods, to the development of alternative approaches of causal analysis in locations with new impairments. Data in this report can help identify locations where alteration in flow patterns are likely to occur, allowing managers to be proactive in anticipating future needs.
 
 # Recommendations for future work
 
-The development of flow predictions under different land use and climatic scenarios for the Santa Ana region is a first step towards more holistic stream assessment in Southern California. Model predictions will be particularly useful for understanding the extent of ephemeral streams that will likely be affected or anticipating where changes are likely to occur. Additional steps can be taken that focus on key components of this work to expand applications beyond the Santa Ana region. 
+The development of flow predictions under different land use and climate scenarios for the Santa Ana region is a first step towards more holistic stream assessment in Southern California. Additional steps can be taken that focus on key components of this work to expand applications beyond the Santa Ana region. 
 
-*More comprehensive comparison with other regional models* This work was derived from similar models developed for the San Diego RWQBC. Additional work to investigate comparability of model results and broader application of these methods to other RWQBCs would facilitate regional assessments.
+*More comprehensive comparison with other regional models* This work was derived from similar models developed for the San Diego RWQCB. Additional work to investigate comparability of model results and broader application of these methods to other RWQCBs would facilitate more comprehensive assessments.
 
-*Additional tool development* The impact of this work could extend beyond the geodatabase if additional tools are developed that improve the communication of results.  In particular, interactive applications should be developed that allow users to better visualize project impacts within the regions.  These tools could include online map applications, to more specific software tools that allow a more comprehensive evaluation of the results. 
+*Additional tool development* The impact of this work could extend beyond the existing data products if additional tools are developed that improve the communication of results.  In particular, interactive applications could be developed that allow users to better visualize projected impacts within the regions.  These tools could include online map applications or specific software tools that allow a more comprehensive evaluation of the results. 
 
 

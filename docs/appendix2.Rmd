@@ -21,7 +21,7 @@ Among all watersheds, flow estimates under reference conditions (Figure 1) were 
 
 Diminishing flow was the most common prediction under anthropogenic conditions, although some exceptions were observed (Figure 2). Stream reaches were more likely to remain stable during the winter, particularly in December. Flow conditions were also more likely to be stable during wet years.   Interestingly, stream conditions in January under normal precipitation were most likely to be inflated, whereas conditions were expected to be stable during wet years. Patterns between catchments were generally consistent.    
 
-```{r refplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 1: Number of stream miles for the estimated discharge (< 1 cfs, 1 - 10 cfs, 10 - 100 cfs, > 100 cfs) under reference conditions. Discharges were also estimated for different climatic scenarios for years that were dry, normal, or wet.'}
+```{r refplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 1: Number of stream miles for the estimated discharge (< 1 cfs, 1 - 10 cfs, 10 - 100 cfs, > 100 cfs) under reference conditions. Discharges were also estimated for different climate scenarios for years that were dry, normal, or wet.'}
 ggplot(data = sum1, aes(x = clim, y = len)) + 
   geom_bar(aes(fill = flocat), stat = "identity", position = "stack") + 
   scale_fill_brewer(palette = "Blues", name = "Discharge") + 
@@ -30,7 +30,7 @@ ggplot(data = sum1, aes(x = clim, y = len)) +
   theme(legend.position = "bottom")
 ```
 
-```{r anthroplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 2: Number of stream miles for the estimated likelihood of a change discharge as inflating, diminishing, or remaining stable under anthropogenic conditions.  Likelihoods were estimated for different climatic scenarios for years that were dry, normal, or wet.' }
+```{r anthroplot, fig.height = 8, fig.width = 7, fig.cap = 'Figure 2: Number of stream miles for the estimated likelihood of a change in discharge as inflating, remaining stable, or diminishing under anthropogenic conditions.  Likelihoods were estimated for different climate scenarios for years that were dry, normal, or wet.' }
 ggplot(data = sum2, aes(x = clim, y = len)) +
   geom_bar(aes(fill = dicat), stat = "identity", position = "stack")+
   scale_fill_manual(values = c("#91cf60","#91bfdb","#fc8d59"), name = "Likely change\nin discharge") + 
