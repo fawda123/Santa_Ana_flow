@@ -26,7 +26,7 @@ Estimates were highest during winter to early spring (January through April) whe
 
 Diminishing flow was the most common prediction under anthropogenic conditions, although some exceptions were observed (Figure 3, Table 2). Stream reaches were more likely to remain stable during the winter, particularly in December. Flow conditions were also more likely to be stable during wet years. Interestingly, stream conditions in January under normal precipitation were most likely to be inflated, whereas conditions were expected to be stable during wet years. Patterns between catchments were generally consistent.
 
-```{r, fig.height = 6.5, fig.width = 7, fig.cap = 'Estimated flow under historic (reference) conditions.'}
+```{r, fig.height = 6.5, fig.width = 7, fig.cap = 'Figure 1: Estimated flow under historic (reference) conditions.'}
 # splits
 flcts <- c(1, 10, 100)
 dicts <- c(0.1, 0.9)
@@ -76,40 +76,36 @@ ggplot(toplo, aes(x = long, y = lat)) +
 ```
 
 
-```{r refplot, fig.height = 6, fig.width = 5, fig.cap = 'Figure 1: Percent stream miles for the estimated discharge (< 1 cfs, 1 - 10 cfs, 10 - 100 cfs, > 100 cfs) under reference conditions. Discharges were also estimated for different climate scenarios for years that were dry, normal, or wet.'}
-ggplot(data = sum1, aes(x = clim, y = lenper*100)) + 
+```{r refplot, fig.height = 4, fig.width = 7, fig.cap = 'Figure 2: Percent of stream length for the estimated discharge (< 1 cfs, 1 - 10 cfs, 10 - 100 cfs, > 100 cfs) under reference conditions. Discharges were also estimated for different climate scenarios for years that were dry, normal, or wet. SGB: San Gabriel; LSA: Lower Santa Ana; MSA: Middle Santa Ana; USA: Upper Santa Ana; and SJC: San Jacinto.'}
+ggplot(data = sum1, aes(x = mo, y = lenper*100)) + 
   geom_bar(aes(fill = flocat), stat = "identity", position = "stack") + 
   scale_fill_brewer(palette = "Blues", name = "Discharge") + 
-  facet_grid(mo~SMC_Name, switch="x") + xlab("") + ylab("% stream-length") + 
-  # ggtitle("Reference flows") +
+  facet_grid(clim~SMC_Name, switch="x") + xlab("") + ylab("% stream-length") + 
   scale_y_continuous(breaks=c(50,100))+
   theme_minimal( base_family = 'serif')+
   theme(legend.position = "bottom",
         panel.background = element_blank(),
-        # panel.border = element_rect(colour = 'gray80', fill = NA, size = 0.5),
-        panel.grid = element_blank(), #panel.background = element_rect(color="gray80",fill=NULL),
+        panel.grid = element_blank(),
         strip.background   = element_blank(), 
         strip.text.y= element_text(angle=0, hjust=0, vjust=0.5),
         strip.placement = "outside",
-        axis.text.x = element_text(size=7),
+        axis.text.x = element_text(size=7, angle = 90, hjust = 1, vjust = 0),
         axis.text.y = element_text(size=8))
 ```
 
-```{r anthroplot, fig.height = 6, fig.width = 5, fig.cap = 'Figure 2: Percent stream miles for the estimated likelihood of a change in discharge as inflating, remaining stable, or diminishing under anthropogenic conditions.  Likelihoods were estimated for different climate scenarios for years that were dry, normal, or wet.' }
-ggplot(data = sum2, aes(x = clim, y = lenper*100)) +
+```{r anthroplot, fig.height = 4, fig.width = 7, fig.cap = 'Figure 3: Percent of stream length for the estimated likelihood of a change in discharge as inflating, remaining stable, or diminishing under anthropogenic conditions. Likelihoods were estimated for different climate scenarios for years that were dry, normal, or wet. SGB: San Gabriel; LSA: Lower Santa Ana; MSA: Middle Santa Ana; USA: Upper Santa Ana; and SJC: San Jacinto.'}
+ggplot(data = sum2, aes(x = mo, y = lenper*100)) +
   geom_bar(aes(fill = dicat), stat = "identity", position = "stack")+
   scale_fill_manual(values = c("#91cf60","#91bfdb","#fc8d59"), name = "Likely change\nin discharge") + 
-  facet_grid(mo~SMC_Name, switch="x") + xlab("") + ylab("% stream-length") + 
-  # ggtitle("% stream-length") +
+  facet_grid(clim~SMC_Name, switch="x") + xlab("") + ylab("% stream-length") + 
   scale_y_continuous(breaks=c(50,100))+
   theme_minimal( base_family = 'serif')+
   theme(legend.position = "bottom",
         panel.background = element_blank(),
-        # panel.border = element_rect(colour = 'gray80', fill = NA, size = 0.5),
-        panel.grid = element_blank(), #panel.background = element_rect(color="gray80",fill=NULL),
+        panel.grid = element_blank(),
         strip.background   = element_blank(), 
         strip.text.y= element_text(angle=0, hjust=0, vjust=0.5),
         strip.placement = "outside",
-        axis.text.x = element_text(size=7),
+        axis.text.x = element_text(size=7, angle = 90, hjust = 1, vjust = 0),
         axis.text.y = element_text(size=8))
 ```
