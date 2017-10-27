@@ -28,11 +28,9 @@ Stream maps that are currently available are insufficient to describe the extent
 
 The Santa Ana Regional Water Quality Control Board (RWQCB) has recently investigated the use of stream periodicity models to map and describe ephemeral streams in Southern California.  These models improve on traditional mapping methods by estimating the likelihood of perennial vs. ephemeral flow at every stream reach in the drainage network. Building on earlier efforts in the San Diego region, this report summarizes efforts to develop and apply stream periodicity models in four watersheds of the Santa Ana region, plus the adjacent San Gabriel watershed. The objective of this application is to better characterize non-perennial streams in this highly developed watershed, in addition to understanding the abilities of existing tools to characterize flow conditions in different watersheds.
 
-# Methods
-
-Flow estimates from `r flos$COMID %>% unique %>% length` stream reaches in `r flos$SMC_Name %>% unique %>% length %>% english %>% as.character` catchments in Southern California were created using a modelling approach that combined existing data with predictive flow variables. Flow estimates were based on reference scenarios under historical, non-impacted land use conditions. Likelihood of flow conditions inflating, diminishing, or remaining stable under anthropogenic conditions (present-day land cover) was also modelled for each watershed.  For both scenarios, monthly flow was characterized for dry, normal, and wet years to assess climatic effects on flow changes.
-
 # Key findings and products
+
+Historic (pre-developed) flows were estimated by modeling stream discharge at 58 reference gauges from arid regions of southern and central California. This model predicts mean monthly flow under wet, normal, and dry conditions, based on watershed characteristics (such as area and geology) and climate data. Because the model was calibrated with reference gauges, predictions reflect undisturbed conditions at catchments that have undergone conversion to urban or agricultural uses. A second model was then developed to estimate likelihood of change from historic conditions (i.e., inflated or diminished flows) based on land cover. Both models were applied to all stream segments in the Santa Ana region, providing maps showing historic and present-day hydrologic conditions. 
 
 **Ephemeral streams are likely to change from year to year**
 
@@ -87,9 +85,9 @@ ggplot(toplo, aes(x = long, y = lat)) +
   guides(colour = guide_colourbar(barwidth = 10, barheight = 0.7))
 ```
 
-**Anthropogenic land uses leads to reduced stream flow in most years**
+**Developed land use leads to reduced stream flow in most years**
 
-Models estimated widespread changes in streamflow from historic conditions. Flows may be reduced at most streams for most of the year, although some streams may have inflated flows in winter months. These changes are typical of urbanization, where impervious surfaces increase peak flows and decrease baseflows, leading to a more "flashy" hydrograph. Conditions in wet years may be somewhat more stable than normal or dry years.
+Models estimated widespread changes in streamflow from historic conditions. Flows may be reduced at most streams for most of the year, although some streams may have inflated flows in winter months. These changes are typical of urbanization, where impervious surfaces increase peak flows and decrease baseflows, leading to a flashier hydrograph. Conditions in wet years may be somewhat more stable than normal or dry years.
 
 ```{r anthroplot, fig.height = 4, fig.width = 7, fig.cap = 'In all watersheds, stream-flow reduction (red) from historic levels may be pervasive for most months of the year. Stable conditions (blue) may be more common in winter months, while inflated flows (green) only occur during the winter.  SGB: San Gabriel; LSA: Lower Santa Ana; MSA: Middle Santa Ana; USA: Upper Santa Ana; and SJC: San Jacinto.' }
 
