@@ -115,3 +115,20 @@ comd <- tidy(refs) %>%
   left_join(key, by = 'id')
 
 save(comd, file = 'data/comd.RData', compress = 'xz')
+
+##
+# comid (polyline for streams comids) to sf object
+
+# study area sheds, SMC from abv
+shed <- readOGR('raw/StudyArea_Sheds.shp') %>% 
+  spTransform(CRS(prstr)) %>%  
+  subset(SMC_Name %in% shds)
+
+# streams lat/lon by comid
+refs <- readOGR('raw/Ref_StudyArea_100317.shp')%>% 
+  spTransform(CRS(prstr)) %>% 
+  raster::intersect(shed)
+comd_sf <- st_as_sf(refs)
+
+save(comd_sf, file = 'data/comd_sf.RData', compress = 'xz')
+save(comd_sf, file = 'Santa_Ana_flow/data/comd_sf.RData', compress = 'xz')

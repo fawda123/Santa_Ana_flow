@@ -38,7 +38,7 @@ Estimates of stream flow vary considerably both throughout the year, and across 
 
 The predictive models were able to produce maps of the relative likelihood of short vs. long flow duration.  Somewhat higher estimates of flow were predicted than is typically encountered in undeveloped portions of the region—particularly during low-flow conditions. However, the relative patterns were correct, indicating that the maps and models are most useful for estimating relative extents within the Santa Ana region.
 
-```{r, fig.height = 6.5, fig.width = 7, fig.cap = 'Estimates of stream flow under reference conditions vary by month, as well as climatic conditions.'}
+```{r execsumm_map, fig.height = 6.5, fig.width = 7, fig.cap = 'Estimates of stream flow under reference conditions vary by month, as well as climatic conditions.'}
 # splits
 flcts <- c(1, 10, 100)
 dicts <- c(0.1, 0.9)
@@ -70,7 +70,7 @@ ggplot(toplo, aes(x = long, y = lat)) +
   geom_line(aes(group = COMID, colour = flo)) + 
   geom_polygon(data = shedplo, aes(group = id), colour = 'black', fill = NA) + 
   facet_grid(clim ~ mo) + 
-  scale_colour_distiller('Flow (cfs)', palette = 'Spectral', direction = 1, trans = 'log10', breaks = c(1, 10, 100), limits = c(1, 1000)) + 
+  scale_colour_distiller('Mean monthly flow (cfs)', palette = 'Spectral', direction = 1, trans = 'log10', breaks = c(1, 10, 100), limits = c(1, 1000)) + 
   theme_minimal(base_family = 'serif') +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1), 

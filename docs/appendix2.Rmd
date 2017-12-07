@@ -26,7 +26,7 @@ Estimates were highest during winter to early spring (January through April) whe
 
 Diminishing flow was the most common prediction under anthropogenic conditions, although some exceptions were observed (Figure 3, Table 2). Stream reaches were more likely to remain stable during the winter, particularly in December. Flow conditions were also more likely to be stable during wet years. Interestingly, stream conditions in January under normal precipitation were most likely to be inflated, whereas conditions were expected to be stable during wet years. Patterns between catchments were generally consistent.
 
-```{r, fig.height = 6.5, fig.width = 7, fig.cap = 'Figure 1: Estimated flow under historic (reference) conditions.'}
+```{r appmap, fig.height = 6.5, fig.width = 7, fig.cap = 'Figure 1: Estimated flow under historic (reference) conditions.'}
 # splits
 flcts <- c(1, 10, 100)
 dicts <- c(0.1, 0.9)
@@ -60,7 +60,7 @@ ggplot(toplo, aes(x = long, y = lat)) +
   geom_line(aes(group = COMID, colour = flo)) + 
   geom_polygon(data = shedplo, aes(group = id), colour = 'black', fill = NA) + 
   facet_grid(clim ~ mo) + 
-  scale_colour_distiller('Flow (cfs)', palette = 'Spectral', direction = 1, trans = 'log10', breaks = c(1, 10, 100), limits = c(1, 1000)) + 
+  scale_colour_distiller('Mean monthly flow (cfs)', palette = 'Spectral', direction = 1, trans = 'log10', breaks = c(1, 10, 100), limits = c(1, 1000)) + 
   theme_minimal(base_family = 'serif') +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1), 
