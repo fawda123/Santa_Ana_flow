@@ -43,13 +43,24 @@ shinyUI(fluidPage(
                          choices = c('Dry', 'Norm', 'Wet'), selected = 'Norm')
       ),
 
-      column(width = 3,
+      column(width = 2,
              sliderInput("ln_sz", 
                          label = h4("Line size:"), 
                          min = 0, 
                          max = 5,
                          value = 1, 
                          step = 0.1
+             )
+      ),
+      
+      # select point radius
+      column(width = 2,
+             sliderInput("pt_sz", 
+                         label = h4("Point size:"), 
+                         min = 0, 
+                         max = 15,
+                         value = 4, 
+                         step = 1
              )
       ),
       
