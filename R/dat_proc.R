@@ -1,6 +1,7 @@
 library(rgdal)
 library(sp)
 library(tidyverse)
+library(sf)
 
 # SMC watersheds in study area
 shds <- c('San Gabriel', 'Upper Santa Ana', 'Middle Santa Ana', 'Lower Santa Ana', 'San Jacinto')
@@ -132,3 +133,19 @@ comd_sf <- st_as_sf(refs)
 
 save(comd_sf, file = 'data/comd_sf.RData', compress = 'xz')
 save(comd_sf, file = 'Santa_Ana_flow/data/comd_sf.RData', compress = 'xz')
+
+##
+# CSCI scores as sf object
+
+load(file = 'Santa_Ana_Flow/data/shed.RData')
+shed <- st_as_sf(shed) %>% 
+  select(SMC_Name)
+
+csci_scrs <- read.csv('ignore/all_csci.csv', header = T, stringsAsFactors = F) %>% 
+  select(CSCI, Latitude, Longitude, SampleID, StationCode, SampleDate) %>% 
+  filter(!is.na(Latitude)) %>% 
+  st_as_sf(coords = c('Longitude', 'Latitude'), crs = st_crs(shed)) %>% 
+  st_intersection(shed)
+
+save(csci_scrs, file = 'Santa_Ana_flow/data/csci_scrs.RData', compress = 'xz')
+
