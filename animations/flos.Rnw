@@ -1,0 +1,144 @@
+\documentclass[serif]{beamer}
+\usetheme{Boadilla}
+\usepackage{graphicx}
+\usepackage[final]{animate}
+\usepackage{breqn}
+\usepackage{xcolor}
+\usepackage{subfig}
+\usepackage{pgf}
+
+%gets rid of bottom navigation bars
+\setbeamertemplate{footline}[frame number]{}
+
+%gets rid of bottom navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+%gets rid of footer
+%will override 'frame number' instruction above
+%comment out to revert to previous/default definitions
+\setbeamertemplate{footline}{}
+
+% knitr setup
+<<setup, include = F, cache = F>>=
+# set global chunk options
+library(knitr)
+opts_chunk$set(fig.path='fig/', fig.align='center', fig.show='hold',message=F,echo=F,results='asis',dev='pdf',dev.args=list(family='serif'),fig.pos='!ht',warning=F)
+options(replace.assign=T,width=90,digits=1)
+pdf.options(useDingbats = TRUE)
+@
+
+% dependent data
+<<dep_dat, include = F, cache = F>>=
+library(tidyverse)
+library(lubridate)
+library(sf)
+library(leaflet)
+load(file = 'data/flos.RData')
+load(file = 'data/comd_sf.RData')
+@
+
+\begin{document}
+
+<<eval = F>>=
+lns <- comd_sf %>% 
+  filter(SMC_Name %in% 'San Gabriel') %>% 
+  st_simplify(dTolerance = 0.001)
+
+pal_flo <- colorNumeric(
+  palette = RColorBrewer::brewer.pal(9, 'Set1'),
+  na.color = 'yellow',
+  domain = c(1, 6.6))
+
+dat <- flos %>% 
+  filter(SMC_Name %in% 'San Gabriel') %>%
+  # filter(clim %in% 'Norm') %>% 
+  dplyr::select(-SMC_Name, -Shape_Leng, -Di) %>% 
+  mutate(
+    yr = '2017', 
+    mo = factor(mo, 
+                levels = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'), 
+                labels = c(1:12)), 
+    mo = as.numeric(mo), 
+    dy = 15
+  ) %>% 
+  unite('date', yr, mo, dy, sep = '-') %>% 
+  mutate(date = ymd(date)) %>% 
+  group_by(COMID, clim) %>% 
+  nest %>% 
+  mutate(
+    data = map(data, function(x){
+      
+      # get dates
+      dt_rng <- range(x$date)
+      dts <- seq.Date(dt_rng[1], dt_rng[2], by= 'day')
+      
+      # get flo interpolations
+      flo_int <- approx(x = x$date, y = x$flo, xout = dts)
+      
+      # format output
+      out <- data.frame(
+        date = dts, 
+        flo = log(1 + flo_int$y)
+      )
+      
+      return(out)
+      
+    })
+  ) %>% 
+  unnest %>% 
+  mutate(
+    sz = scales::rescale(flo, c(0.1, 6)), 
+    cl = pal_flo(flo)
+  ) 
+
+dts <- unique(dat$date)
+lns <- lns %>% 
+  select(COMID) %>% 
+  filter(COMID %in% dat$COMID)
+
+pdf('flos_raw.pdf', height = 4, width = 8)
+par(mar = c(0, 0, 4, 0), mfrow = c(1, 3), family = 'serif')
+for(i in as.character(dts)){
+  
+  cat(i, '\t')
+  
+  wet <- dat %>% 
+    filter(date %in% ymd(i) & clim %in% 'Wet') %>% 
+    left_join(lns, ., by ='COMID') %>% 
+    fortify
+
+  nrm <- dat %>% 
+    filter(date %in% ymd(i) & clim %in% 'Norm') %>% 
+    left_join(lns, ., by ='COMID') %>% 
+    fortify
+  
+  dry <- dat %>% 
+    filter(date %in% ymd(i) & clim %in% 'Dry') %>% 
+    left_join(lns, ., by ='COMID') %>% 
+    fortify
+  
+  # title
+  tt <- ymd(i)
+  tt <- c(as.character(month(tt, label = T)), day(tt)) %>% 
+    paste(collapse = ', ')
+  
+  #plots
+  plot(st_geometry(wet), col = as.character(wet$cl), lwd = wet$sz)
+  title('Wet', line = 0)
+  plot(st_geometry(nrm), col = as.character(nrm$cl), lwd = nrm$sz)
+  title('Normal', line = 0)
+  mtext(tt, side = 3, line = 2)
+  plot(st_geometry(dry), col = as.character(dry$cl), lwd = dry$sz)
+  title('Dry', line = 0)
+
+}
+dev.off()
+@  
+%%%%%%
+\begin{frame}{}{}
+\begin{center}
+\animategraphics[controls, width =\linewidth, loop]{15}{flos_raw}{}{} %frame rate is 12 per/sec
+\end{center}
+\end{frame}
+
+\end{document}
