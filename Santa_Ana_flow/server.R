@@ -132,7 +132,7 @@ server <- function(input, output) {
     
     # score expectations
     mp <- leafletProxy("map", data = dat()) %>%
-      # clearMarkers() %>%
+      clearMarkers() %>%
       clearControls() %>%
       clearShapes() %>% 
       addPolygons(data = shed(), opacity = 1, weight = 1, color = 'grey', 
